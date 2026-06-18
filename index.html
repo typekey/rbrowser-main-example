@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RBrowser — Installed Package Example</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>
+        RBrowser Example
+        <small>@rbrowser/main v<span id="ver">…</span> · published npm package</small>
+      </h1>
+    </header>
+
+    <main>
+      <!-- mountBrowser() renders the full browser WITH the native header here.
+           We capture the renderer instance via a prototype.mount intercept, so
+           the side-panel controls drive the real API at the same time. -->
+      <div id="rbrowser"></div>
+
+      <aside class="panel">
+        <!-- 1. Current Locus (with DNA / RNA / CDS mode switch) -->
+        <section>
+          <h3>Current Locus</h3>
+          <div class="row mode-row">
+            <button id="md-dna" class="md">DNA</button>
+            <button id="md-rna" class="md">RNA</button>
+            <button id="md-cds" class="md">CDS</button>
+          </div>
+          <div class="kv"><span>Mode</span><b id="locus-mode">—</b></div>
+          <div class="kv"><span>Gene</span><b id="locus-gene">—</b></div>
+          <div class="kv"><span>Transcript</span><b id="locus-trans">—</b></div>
+          <div class="kv"><span>Trans ID</span><b id="locus-transid">—</b></div>
+          <div class="kv"><span>Type</span><b id="locus-type">—</b></div>
+          <div class="kv"><span>Strand</span><b id="locus-strand">—</b></div>
+          <div class="kv"><span>Region</span><b id="locus-where">—</b></div>
+          <div class="kv"><span>Assembly</span><b id="locus-asm">—</b></div>
+          <div class="kv"><span>Favorite</span><b id="locus-fav">—</b></div>
+          <div class="row">
+            <input
+              id="locus-input"
+              type="text"
+              placeholder="VAMP3-201:5000:5000  or  chr1:7769296-7783432"
+            />
+            <button id="locus-go">Go</button>
+          </div>
+          <div class="row examples">
+            <button id="ex1">Example 1</button>
+            <button id="ex2">Example 2</button>
+          </div>
+          <p class="desc">
+            <code>renderer.region = …</code> ·
+            <code>renderer.locusManager.getLocus() / setMode() / tick()</code>
+          </p>
+        </section>
+
+        <!-- 2. Load Track -->
+        <section>
+          <h3>Load Track</h3>
+          <button id="load-local">Load Local File</button>
+          <button id="load-remote">Load Remote File</button>
+          <input
+            id="local-file"
+            type="file"
+            multiple
+            hidden
+            accept=".bam,.bai,.cram,.crai,.vcf.gz,.tbi,.bigwig,.bw,.bigbed,.bb,.bed.gz,.gff.gz,.gff3.gz,.gtf.gz,.fasta,.fa,.fasta.gz,.fa.gz,.fai,.gzi,.ism.gz"
+          />
+          <p class="desc">
+            <code>renderer.importLocalFiles(files)</code> ·
+            <code>renderer.importRemoteUrl()</code>
+          </p>
+        </section>
+
+        <!-- 3. Highlight -->
+        <section>
+          <h3>Highlight</h3>
+          <button id="hl-add">Add (current view)</button>
+          <button id="hl-clear">Clear</button>
+          <p class="desc" id="hl-info">—</p>
+          <p class="desc">
+            <code>renderer.highlightManager.setRegion()</code> ·
+            <code>.clear()</code> · <code>.size</code> / <code>.isEmpty</code>
+          </p>
+        </section>
+
+        <!-- 4. History -->
+        <section>
+          <h3>History <button id="history-clear" class="link">Clear</button></h3>
+          <ul id="history"><li class="muted">empty</li></ul>
+          <p class="desc"><code>historyManager.getAll() / on() / add() / clear()</code></p>
+        </section>
+
+        <!-- 5. Favorites -->
+        <section>
+          <h3>
+            Favorites <small>(<span id="fav-count">0</span>)</small>
+            <button id="fav-clear" class="link">Clear</button>
+          </h3>
+          <button id="fav-toggle">★ Toggle current</button>
+          <ul id="favorites"><li class="muted">empty</li></ul>
+          <p class="desc"><code>favouriteManager.toggle() / getAll() / on()</code></p>
+        </section>
+      </aside>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+/* Only box-sizing is global; everything else is scoped to .topbar / .panel so it
+   never leaks into #rbrowser (the native RBrowser header + tracks). */
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+body { display: flex; flex-direction: column; height: 100vh; background: #f0f2f5; color: #1f2630; }
+
+.topbar {
+  background: linear-gradient(135deg, #1a5276 0%, #2980b9 100%);
+  color: #fff;
+  padding: 0.85rem 1.2rem;
+}
+.topbar h1 { font-size: 1.15rem; margin: 0; font-weight: 600; }
+.topbar h1 small { font-weight: 400; opacity: 0.82; font-size: 0.78rem; margin-left: 0.5rem; }
+
+main { flex: 1; display: flex; min-height: 0; }
+#rbrowser { flex: 1; min-width: 0; background: #fff; }
+
+/* ── Right panel (all selectors scoped under .panel) ─────────────────────── */
+.panel { width: 320px; border-left: 1px solid #dcdfe3; background: #fafbfc; padding: 0.75rem 0.9rem; overflow: auto; }
+
+.panel section { background: #fff; border: 1px solid #e6e9ed; border-radius: 8px; padding: 0.7rem 0.8rem; margin-bottom: 0.7rem; }
+.panel section h3 { margin: 0 0 0.55rem; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; }
+.panel section h3 small { font-weight: 400; color: #8a94a0; font-size: 0.76rem; }
+
+.panel .desc { margin: 0.5rem 0 0; font-size: 0.7rem; color: #8a94a0; line-height: 1.5; }
+.panel .desc code, .panel h3 code { background: #f1f3f5; border-radius: 4px; padding: 0 4px; font-size: 0.92em; font-family: ui-monospace, Menlo, Consolas, monospace; }
+
+.panel button {
+  border: 0; border-radius: 6px; padding: 0.42rem 0.7rem; margin: 0 0.35rem 0.35rem 0;
+  background: #2980b9; color: #fff; cursor: pointer; font-size: 0.8rem;
+}
+.panel button:hover { background: #2470a5; }
+.panel button:disabled { background: #c7ccd2; cursor: not-allowed; }
+.panel button.link { background: none; color: #2980b9; padding: 0; margin: 0 0 0 auto; font-size: 0.74rem; }
+.panel button.link:hover { text-decoration: underline; background: none; }
+
+.panel .row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.panel input[type="text"] {
+  flex: 1; min-width: 0; border: 1px solid #d0d5db; border-radius: 6px;
+  padding: 0.4rem 0.5rem; font-size: 0.76rem;
+}
+
+.panel .row.examples button { background: #20bf6b; }
+.panel .row.examples button:hover { background: #1aa85d; }
+
+.panel .mode-row button.md { min-width: 46px; font-weight: 600; background: #fff; color: #2c3a47; border: 1px solid #cfd6dd; }
+.panel .mode-row button.md:hover { border-color: #2980b9; color: #2980b9; }
+.panel .mode-row button.md.active { background: #2980b9; color: #fff; border-color: #2980b9; }
+
+/* key/value rows in Current Locus */
+.panel .kv { display: flex; justify-content: space-between; font-size: 0.78rem; padding: 0.18rem 0; }
+.panel .kv span { color: #8a94a0; }
+.panel .kv b { font-weight: 600; font-family: ui-monospace, Menlo, Consolas, monospace; }
+
+/* lists */
+.panel ul { list-style: none; margin: 0.4rem 0 0; padding: 0; max-height: 160px; overflow: auto; }
+.panel li { font-size: 0.74rem; padding: 0.32rem 0.4rem; border-bottom: 1px solid #f1f3f5; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.panel li.muted { color: #b3bac2; font-family: inherit; }
+.panel li.clickable { cursor: pointer; }
+.panel li.clickable:hover { background: #eef4fb; }
+.panel li .li-primary { display: block; font-weight: 600; color: #1f2630; }
+.panel li .li-secondary { display: block; color: #8a94a0; font-size: 0.68rem; margin-top: 1px; }
