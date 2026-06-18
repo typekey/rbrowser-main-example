@@ -3,14 +3,14 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Runnable example using the PUBLISHED @rbrowser/main package (not the local file: link).",
+  "description": "Example using the published @rbrowser/main package. Needs >= 1.0.60 (mountBrowser returns { renderer, unmount }).",
   "scripts": {
     "dev": "vite --port 3001",
     "build": "vite build",
     "preview": "vite preview --port 4301"
   },
   "dependencies": {
-    "@rbrowser/main": "1.0.57",
+    "@rbrowser/main": "1.0.60",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

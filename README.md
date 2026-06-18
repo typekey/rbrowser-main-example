@@ -1,6 +1,6 @@
 # rbrowser-main-example
 
-A minimal, runnable example of [`@rbrowser/main`](https://www.npmjs.com/package/@rbrowser/main) (v1.0.57).
+A minimal, runnable example of [`@rbrowser/main`](https://www.npmjs.com/package/@rbrowser/main) (>= v1.0.60).
 
 It shows the **native RBrowser header** (the full toolbar: reference dropdown,
 region search, RNA Mode, Scenario, import / highlight / history / favourite /
@@ -19,25 +19,25 @@ of `@rbrowser/main` treats them as external (the example writes no React code).
 
 ## How it works
 
-`mountBrowser()` renders the full browser (native header) and creates the
-renderer internally, keeping it private. To get the instance too, intercept
-`TranscriptBrowserRenderer.prototype.mount` once to capture it, then restore the
-prototype:
+`mountBrowser()` renders the full browser (native header) **and** returns a
+handle `{ renderer, unmount }`. The `renderer` instance is available
+synchronously, so you get the native UI and full API access at once:
 
 ```js
-import { mountBrowser, TranscriptBrowserRenderer } from "@rbrowser/main";
+import { mountBrowser } from "@rbrowser/main";
 
-let renderer = null;
-const origMount = TranscriptBrowserRenderer.prototype.mount;
-TranscriptBrowserRenderer.prototype.mount = function () {
-  renderer = this;                                        // capture the instance
-  TranscriptBrowserRenderer.prototype.mount = origMount;  // restore immediately
-  return origMount.call(this);
-};
+const { renderer, unmount } = mountBrowser("rbrowser"); // native header + tracks
 
-const unmount = mountBrowser("rbrowser");                 // native header + tracks
-// now: renderer.channelManager / referenceManager / highlightManager / locusManager …
+renderer.locusManager;
+renderer.searchManager;
+renderer.channelManager;
+renderer.referenceManager;
+renderer.highlightManager;
+// later: unmount();
 ```
+
+> Requires `@rbrowser/main` **>= 1.0.60**. Earlier versions returned only an
+> `unmount` function and did not expose the renderer instance.
 
 ## What the side panel calls
 
@@ -50,7 +50,8 @@ const unmount = mountBrowser("rbrowser");                 // native header + tra
 | Favorites | `favouriteManager.toggle() / getAll() / count / on()` · `locusManager.navigateToLocus()` |
 
 Plus `mountBrowser`, `VERSION`. `historyManager` / `favouriteManager` are global
-singletons; the other managers come from the captured renderer instance.
+singletons; the other managers come from the `renderer` handle returned by
+`mountBrowser`.
 
 ## Files
 

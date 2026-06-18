@@ -1,16 +1,14 @@
-// RBrowser API test bench — published npm package @rbrowser/main@1.0.57.
+// RBrowser API test bench — @rbrowser/main.
 //
 // Goal: the NATIVE header panel (the real RBrowser toolbar) AND full access to
 // the renderer instance (channelManager / referenceManager / highlightManager /
 // locusManager …) AT THE SAME TIME.
 //
-// How: mountBrowser() renders the full React browser (native header) and creates
-// the renderer internally, keeping it private. We intercept
-// TranscriptBrowserRenderer.prototype.mount ONCE to capture that instance the
-// moment MainView mounts it, then restore the prototype. Now we have both.
+// mountBrowser() renders the full React browser (native header) and returns a
+// handle { renderer, unmount } — the renderer instance is available
+// synchronously, so the side panel below drives the public API directly.
 import {
   mountBrowser,
-  TranscriptBrowserRenderer,
   VERSION,
   historyManager,
   favouriteManager,
@@ -20,26 +18,14 @@ const $ = (id) => document.getElementById(id);
 $("ver").textContent = VERSION;
 console.log("[example] @rbrowser/main VERSION =", VERSION);
 
-// ── Capture the instance created inside mountBrowser's MainView ──────────────
-let renderer = null;
-const origMount = TranscriptBrowserRenderer.prototype.mount;
-TranscriptBrowserRenderer.prototype.mount = function () {
-  renderer = this; // the instance MainView just created
-  TranscriptBrowserRenderer.prototype.mount = origMount; // restore immediately
-  const ret = origMount.call(this);
-  onRendererReady();
-  return ret;
-};
+// ── Mount the full browser (native header) and grab the renderer handle ──────
+const { renderer, unmount } = mountBrowser("rbrowser");
+console.log("[example] mountBrowser() → { renderer, unmount }", renderer);
 
-const unmount = mountBrowser("rbrowser"); // ← native header + tracks
-console.log("[example] mountBrowser() → native header mounted");
-
-function onRendererReady() {
-  console.log("[example] renderer instance captured ✓");
-  renderLocus(renderer.locusManager.getLocus());
-  updateHighlightInfo();
-  startLocusLoop();
-}
+// renderer is available synchronously — initialise the side panel now.
+renderLocus(renderer.locusManager.getLocus());
+updateHighlightInfo();
+startLocusLoop();
 
 // ── Current Locus: mode switch (DNA / RNA / CDS) ─────────────────────────────
 const MODES = ["dna", "rna", "cds"];
@@ -202,8 +188,5 @@ renderHistory();
 renderFavorites();
 
 if (import.meta.hot) {
-  import.meta.hot.dispose(() => {
-    TranscriptBrowserRenderer.prototype.mount = origMount; // safety restore
-    unmount();
-  });
+  import.meta.hot.dispose(() => unmount());
 }
